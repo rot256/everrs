@@ -54,5 +54,4 @@ fn main() {
 
     // compile to static library
     builder.compile("libevercrypt.a");
-    println!("cargo:rustc-link-search=.");
 }
