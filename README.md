@@ -17,13 +17,12 @@ Despite these guarantees the performance of EverCrypt is very competitive.
 Eventually bindings for all EverCrypt primitives will be provided.
 Currently the following primitives are supported:
 
-- 'ChaCha20Poly1305'
-- 'X25519'
-
+- X25519
+- ChaCha20Poly1305
 
 For X25519, the API is (almost) a drop-in alternative to [x25519-dalek](https://github.com/dalek-cryptography/x25519-dalek) library.
 
-Below is a simple example of how to efficiently encrypt and authenticate a buffer using Everrs:
+Below is a simple example of how to encrypt and authenticate a buffer using Everrs:
 
 ```rust
 use everrs::chacha20poly1305::{seal, open};

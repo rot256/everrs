@@ -192,6 +192,7 @@ mod tests {
     use super::*;
     use proptest::prelude::*;
     use std::vec::Vec;
+    use test::Bencher;
 
     proptest! {
         #[test]
@@ -219,5 +220,17 @@ mod tests {
             open_inplace(&key, &nonce, &ad[..], pb, tb).unwrap();
             assert_eq!(&pb[..], &pt[..], "open_inplace \\circ seal_inplace != id");
         }
+    }
+
+    #[bench]
+    fn bench_seal(b: &mut Bencher) {
+        let key: [u8; 32] = [1; 32];
+        let nonce: [u8; 24] = [0; 24];
+        let ad: [u8; 0] = [];
+        let mut tag: [u8; 16] = [0; 16];
+        let mut pt: Vec<u8> = vec![0; 1024 * 1024];
+        b.iter(|| {
+            seal_inplace(&key, &nonce, &ad[..], &mut pt[..], &mut tag[..]);
+        });
     }
 }
