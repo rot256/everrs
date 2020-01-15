@@ -1,0 +1,15 @@
+[package]
+name = "everrs"
+version = "0.1.0"
+authors = ["Mathias Hall-Andersen"]
+edition = "2018"
+build = "build.rs"
+
+[dependencies]
+cty = "*"
+
+[dev-dependencies]
+proptest = "0.9.4"
+
+[build-dependencies]
+cc = "1.0"
