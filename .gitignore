@@ -1,0 +1,5 @@
+target
+proptest-regressions
+.github
+.vscode
+Cargo.lock

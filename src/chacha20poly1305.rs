@@ -1,27 +1,6 @@
-#[link(name = "evercrypt", kind = "static")]
-extern "C" {
-    fn EverCrypt_Chacha20Poly1305_aead_encrypt(
-        k: *const cty::uint8_t,
-        n1: *const cty::uint8_t,
-        aadlen: cty::uint32_t,
-        aad: *const cty::uint8_t,
-        mlen: cty::uint32_t,
-        m: *const cty::uint8_t,
-        cipher: *mut cty::uint8_t,
-        tag: *mut cty::uint8_t,
-    );
-
-    fn EverCrypt_Chacha20Poly1305_aead_decrypt(
-        k: *const cty::uint8_t,
-        n1: *const cty::uint8_t,
-        aadlen: cty::uint32_t,
-        aad: *const cty::uint8_t,
-        mlen: cty::uint32_t,
-        m: *mut cty::uint8_t,
-        cipher: *const cty::uint8_t,
-        tag: *const cty::uint8_t,
-    ) -> cty::uint32_t;
-}
+use super::bind::{
+    EverCrypt_Chacha20Poly1305_aead_decrypt, EverCrypt_Chacha20Poly1305_aead_encrypt,
+};
 
 /// Decrypt & authenticate a buffer with ChaCha20Poly1305
 ///
