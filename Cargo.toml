@@ -5,6 +5,10 @@ authors = ["Mathias Hall-Andersen"]
 edition = "2018"
 build = "build.rs"
 exclude = ["README.md", "icon.png"]
+description = "Bindings for the HACL*/EverCrypt crypto library"
+repository = "https://github.com/rot256/everrs"
+license = "MIT"
+keywords = ["no-std", "crypto"]
 
 [dependencies]
 cty = "0.2.1"
