@@ -1,5 +1,7 @@
 <img src="icon.png" align="right" height="350" width="350"/>
 
+![CI Status](https://github.com/rot256/everrs/workflows/Rust/badge.svg)
+
 # Everrs
 
 Everrs provides safe bindings for the formally verified [HACL*/EverCrypt](https://github.com/project-everest/hacl-star) crypto library:
