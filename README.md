@@ -38,7 +38,7 @@ open(&key, &nonce, &ad[..], &mut ptt, &ct, &tag).expect("authentication failure"
 ## API Philosophy
 
 Most (all?) cryptographic functions are pure functions,
-hence there are essentially two classes o- handle authentication faf potential failures:
+hence there are essentially two classes of errors/failures:
 
 1. The developer provides invalid arguments (essentially the type system is not sufficiently expressive to stop him),
 e.g. the size of the result buffer is insuffient to hold the decrypted ciphertext, or a key is to short for the scheme.
@@ -46,6 +46,6 @@ e.g. the size of the result buffer is insuffient to hold the decrypted ciphertex
 
 Everrs adopts the philosphy that errors should be meaningful signals at runtime, not indicators of bad programming.
 Hence we believe that the first type of error is best dealt with by causing a 'panic',
-rather than return a 'Result' which could potentially be handled, 
+rather than return a 'Result' which could potentially be handled,
 but would never occur when the library is used correctly.
 This is consistent with e.g. the behavior when accessing elements out-of-bounds in slices.
