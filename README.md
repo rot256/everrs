@@ -1,6 +1,7 @@
 <img src="icon.png" align="right" height="350" width="350"/>
 
-![CI Status](https://github.com/rot256/everrs/workflows/Rust/badge.svg)
+![Stable Rust CI Status](https://github.com/rot256/everrs/workflows/stable/badge.svg)
+![Nightly Rust CI Status](https://github.com/rot256/everrs/workflows/nightly/badge.svg)
 
 # Everrs
 
