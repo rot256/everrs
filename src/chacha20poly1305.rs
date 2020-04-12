@@ -204,6 +204,8 @@ mod tests {
     use core::convert::TryInto;
     use proptest::prelude::*;
     use std::vec::Vec;
+
+    #[cfg(feature = "nightly")]
     use test::Bencher;
 
     proptest! {
@@ -234,6 +236,7 @@ mod tests {
         }
     }
 
+    #[cfg(feature = "nightly")]
     #[bench]
     fn bench_seal(b: &mut Bencher) {
         let key: [u8; 32] = [1; 32];

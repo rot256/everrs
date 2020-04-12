@@ -1,21 +1,24 @@
-name: Rust
+name: nightly
 
 on: [push]
 
 jobs:
   build:
-    name: Everrs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Install latest nightly
+      
+      - name: Set nightly toolchain
         uses: actions-rs/toolchain@v1
         with:
             toolchain: nightly
             override: true
 
       - name: Build
-        run: cargo build --verbose
+        run: cargo build
 
-      - name: Run tests
-        run: cargo test --verbose
+      - name: Test
+        run: cargo test
+
+      - name: Format
+        run: cargo fmt --all -- --check
