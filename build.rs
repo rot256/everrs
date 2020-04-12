@@ -10,11 +10,9 @@ fn main() {
     let mut builder = cc::Build::new();
     builder.warnings_into_errors(true);
     builder.static_flag(true);
-    builder.flag("-std=c11");
     builder.flag("-Wall");
     builder.flag("-Wextra");
     builder.flag("-Werror");
-    builder.flag("-std=c11");
     builder.flag("-Wno-unused-variable");
     builder.flag("-Wno-unused-but-set-variable");
     builder.flag("-Wno-unused-parameter");
@@ -22,11 +20,22 @@ fn main() {
     builder.flag("-fwrapv");
     builder.flag("-D_BSD_SOURCE");
     builder.flag("-D_DEFAULT_SOURCE");
-    builder.flag("-march=native");
-    builder.flag("-mtune=native");
-    builder.flag("-std=gnu11");
-    //  -std=c89 -Wno-typedef-redefinition -Wno-unused -Wno-parentheses -Wno-deprecated-declarations -g
 
+    #[cfg(feature = "native")]
+    {
+        builder.flag("-march=native");
+        builder.flag("-mtune=native");
+    }
+
+    // otherwise the default is some semi-old processor which supports AVX2 + AES-NI
+    // which is needed for compilation, but which is not required at run-time due to feature detection.
+    #[cfg(not(feature = "native"))]
+    {
+        builder.flag("-march=haswell");
+        builder.flag("-mtune=haswell");
+    }
+
+    builder.flag("-std=gnu11");
     builder.include(&kremlin_path.join("include"));
     builder.include(&kremlin_path.join("kremlib/dist/minimal"));
     builder.include(&dist_path.join("include"));

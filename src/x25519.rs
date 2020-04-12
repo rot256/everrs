@@ -77,7 +77,7 @@ impl PublicKey {
 impl From<[u8; 32]> for SecretKey {
     fn from(sk: [u8; 32]) -> SecretKey {
         let mut sk = SecretKey { scalar: sk };
-        clamp_scalar(&mut sk.scalar);
+        clamp_scalar(&mut sk.scalar); // this is a no-op on well-formed private keys
         sk
     }
 }

@@ -2,6 +2,10 @@ use super::bind::{
     EverCrypt_Chacha20Poly1305_aead_decrypt, EverCrypt_Chacha20Poly1305_aead_encrypt,
 };
 
+const SIZE_KEY: usize = 32;
+const SIZE_TAG: usize = 16;
+const SIZE_NONCE: usize = 24;
+
 /// Decrypt & authenticate a buffer with ChaCha20Poly1305
 ///
 /// # Arguments
@@ -25,12 +29,12 @@ use super::bind::{
 /// Checking the Result is crucial for security.
 #[must_use = "authentication failure must be handled"]
 pub fn open(
-    key: &[u8; 32],
-    nonce: &[u8; 24],
+    key: &[u8; SIZE_KEY],
+    nonce: &[u8; SIZE_NONCE],
     ad: &[u8],
     pt: &mut [u8],
     ct: &[u8],
-    tag: &[u8; 16],
+    tag: &[u8; SIZE_TAG],
 ) -> Result<(), ()> {
     assert!(ct.len() <= pt.len());
     assert!(ct.len() <= u32::max_value() as usize);
@@ -77,11 +81,11 @@ pub fn open(
 /// Checking the Result is crucial for security.
 #[must_use = "authentication failure must be handled"]
 pub fn open_inplace(
-    key: &[u8; 32],
+    key: &[u8; SIZE_KEY],
     nonce: &[u8],
     ad: &[u8],
     msg: &mut [u8],
-    tag: &[u8],
+    tag: &[u8; SIZE_TAG],
 ) -> Result<(), ()> {
     assert!(ad.len() <= u32::max_value() as usize);
     assert!(msg.len() <= u32::max_value() as usize);
@@ -123,12 +127,12 @@ pub fn open_inplace(
 /// The plaintext buffer must be less than 2^32 bytes.
 /// The ciphertext buffer must be at least the size of the plaintext buffer.
 pub fn seal(
-    key: &[u8; 32],
-    nonce: &[u8; 24],
+    key: &[u8; SIZE_KEY],
+    nonce: &[u8; SIZE_NONCE],
     ad: &[u8],
     pt: &[u8],
     ct: &mut [u8],
-    tag: &mut [u8; 16],
+    tag: &mut [u8; SIZE_TAG],
 ) {
     assert!(ct.len() >= pt.len());
     assert!(pt.len() <= u32::max_value() as usize);
@@ -159,8 +163,8 @@ pub fn seal(
 ///
 /// # Usage
 ///
-/// A continous region of memory can be encrypted and the tag
-/// appended/preprended by using the `std::slice::split_at_mut`
+/// A continuous region of memory can be encrypted and the tag
+/// appended/pre-pended by using the `std::slice::split_at_mut`
 /// function to obtain two disjoint mutable slices.
 ///
 /// # Notes
@@ -168,7 +172,13 @@ pub fn seal(
 /// The AD must be less than 2^32 bytes.
 /// The message buffer must be less than 2^32 bytes.
 /// The tag buffer must be exactly 16 bytes.
-pub fn seal_inplace(key: &[u8; 32], nonce: &[u8], ad: &[u8], msg: &mut [u8], tag: &mut [u8]) {
+pub fn seal_inplace(
+    key: &[u8; SIZE_KEY],
+    nonce: &[u8; SIZE_NONCE],
+    ad: &[u8],
+    msg: &mut [u8],
+    tag: &mut [u8; SIZE_TAG],
+) {
     assert!(ad.len() <= u32::max_value() as usize);
     assert!(msg.len() <= u32::max_value() as usize);
     assert_eq!(nonce.len(), 24, "nonce must be 24 bytes long");
@@ -190,6 +200,8 @@ pub fn seal_inplace(key: &[u8; 32], nonce: &[u8], ad: &[u8], msg: &mut [u8], tag
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use core::convert::TryInto;
     use proptest::prelude::*;
     use std::vec::Vec;
     use test::Bencher;
@@ -216,8 +228,8 @@ mod tests {
             let (pb, tb) = ptt.split_at_mut(pt.len());
 
             // encrypt / decrypt in-place
-            seal_inplace(&key, &nonce, &ad[..], pb, tb);
-            open_inplace(&key, &nonce, &ad[..], pb, tb).unwrap();
+            seal_inplace(&key, &nonce, &ad[..], pb, tb.try_into().unwrap());
+            open_inplace(&key, &nonce, &ad[..], pb, (&*tb).try_into().unwrap()).unwrap();
             assert_eq!(&pb[..], &pt[..], "open_inplace \\circ seal_inplace != id");
         }
     }
@@ -230,7 +242,13 @@ mod tests {
         let mut tag: [u8; 16] = [0; 16];
         let mut pt: Vec<u8> = vec![0; 1024 * 1024];
         b.iter(|| {
-            seal_inplace(&key, &nonce, &ad[..], &mut pt[..], &mut tag[..]);
+            seal_inplace(
+                &key,
+                &nonce,
+                &ad[..],
+                &mut pt[..],
+                (&mut tag[..]).try_into().unwrap(),
+            );
         });
     }
 }

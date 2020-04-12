@@ -1,6 +1,6 @@
 [package]
 name = "everrs"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Mathias Hall-Andersen"]
 edition = "2018"
 build = "build.rs"
@@ -20,3 +20,11 @@ proptest = "0.9.4"
 
 [build-dependencies]
 cc = "1.0"
+
+[features]
+default = []
+
+# build and optimize EverCrypt solely for the native CPU
+# NOTE: the build might not run on other CPU-types,
+# see e.g. https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html for additional details.
+native = []
